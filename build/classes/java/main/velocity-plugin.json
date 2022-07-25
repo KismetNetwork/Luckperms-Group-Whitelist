@@ -1,0 +1,1 @@
+{"id":"luckpermsgroupwhitelist","name":"Luckperms Group Whitelist","version":"0.1.0-SNAPSHOT","description":"Only allow a certain luckperms group to join a server ","url":"https://github.com/KismetNetwork/Luckperms-Group-Whitelist","authors":["AI-nsley69"],"dependencies":[],"main":"io.github.KismetNetwork.LuckpermsGroupWhitelist"}
