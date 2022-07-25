@@ -2,14 +2,11 @@ plugins {
     id 'java'
 }
 
-group 'io.github.KismetNetwork'
-version '0.1.0-SNAPSHOT'
-
 repositories {
     mavenCentral()
     maven {
-        name 'papermc'
-        url 'https://repo.papermc.io/repository/maven-public/'
+        name = "PaperMC"
+        url = uri("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
