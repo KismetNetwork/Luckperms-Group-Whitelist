@@ -23,8 +23,12 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Plugin(id = "luckpermsgroupwhitelist", name = "Luckperms Group Whitelist", version = "0.1.0-SNAPSHOT",
-        url = "https://github.com/KismetNetwork/Luckperms-Group-Whitelist", description = "Only allow a certain luckperms group to join a server ", authors = {"AI-nsley69"})
+@Plugin(id = "luckpermsgroupwhitelist",
+        name = "Luckperms Group Whitelist",
+        version = "0.1.0-SNAPSHOT",
+        url = "https://github.com/KismetNetwork/Luckperms-Group-Whitelist",
+        description = "Only allow a certain luckperms group to join a server ",
+        authors = {"AI-nsley69"})
 public class LuckpermsGroupWhitelist {
     private final ProxyServer server;
     private final Logger logger;
