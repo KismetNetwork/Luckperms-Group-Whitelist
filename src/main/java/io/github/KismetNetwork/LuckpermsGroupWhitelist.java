@@ -56,9 +56,6 @@ public class LuckpermsGroupWhitelist {
                 .map(InheritanceNode::getGroupName)
                 .collect(Collectors.toSet());
         // TODO: check if server is in config & player is allowed
-        /*
-        Component kickMessage = Component.text("You are not authorized to connect to this server!");
-        player.disconnect(kickMessage);
-        */
+        // event.setResult(ServerPreConnectEvent.ServerResult.denied());
     }
 }
