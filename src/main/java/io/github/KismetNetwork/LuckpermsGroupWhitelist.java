@@ -5,6 +5,7 @@ import com.moandjiezana.toml.Toml;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
+import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.Player;
@@ -28,7 +29,8 @@ import java.util.stream.Collectors;
         version = "0.1.0-SNAPSHOT",
         url = "https://github.com/KismetNetwork/Luckperms-Group-Whitelist",
         description = "Only allow a certain luckperms group to join a server ",
-        authors = {"AI-nsley69"})
+        authors = {"AI-nsley69", "Ampflower"},
+        dependencies = {@Dependency(id = "luckperms")})
 public class LuckpermsGroupWhitelist {
     private final ProxyServer server;
     private final Logger logger;
