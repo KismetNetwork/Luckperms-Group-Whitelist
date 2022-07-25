@@ -99,16 +99,12 @@ public class LuckpermsGroupWhitelist {
                 .collect(Collectors.toSet());
 
         // Iterate over the required groups and check if the user is in said group
-        boolean isAllowed = false;
         for (String g : requiredGroups) {
             if (groups.contains(g)) {
-                isAllowed = true;
-                break;
+                return;
             }
         }
 
-        // Check if user is allowed, otherwise deny them
-        if (isAllowed) return;
         event.setResult(ServerPreConnectEvent.ServerResult.denied());
     }
 }
