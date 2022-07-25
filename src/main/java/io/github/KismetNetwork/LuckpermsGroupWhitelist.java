@@ -44,7 +44,10 @@ public class LuckpermsGroupWhitelist {
     }
     // onServerPreConnect event to check if the player is in the group it needs to be able to connect
     @Subscribe(order = PostOrder.EARLY)
-    public static void onServerPreConnect(ServerPreConnectEvent event) {
+    public void onServerPreConnect(ServerPreConnectEvent event) {
+        // Check if requiredGroups has permissions, otherwise return
+        String[] requiredGroups = {};
+        if (requiredGroups.length < 1) return;
         // Get the player object
         Player player = event.getPlayer();
         // Get the server and then the name from the server
@@ -55,7 +58,16 @@ public class LuckpermsGroupWhitelist {
         Set<String> groups = user.getNodes(NodeType.INHERITANCE).stream()
                 .map(InheritanceNode::getGroupName)
                 .collect(Collectors.toSet());
-        // TODO: check if server is in config & player is allowed
-        // event.setResult(ServerPreConnectEvent.ServerResult.denied());
+        // Iterate over the required groups and check if the user is in said group
+        boolean isAllowed = false;
+        for (String g : requiredGroups) {
+            if (groups.contains(g)) {
+                isAllowed = true;
+                break;
+            }
+        }
+        // Check if user is allowed, otherwise deny them
+        if (isAllowed) return;
+        event.setResult(ServerPreConnectEvent.ServerResult.denied());
     }
 }
