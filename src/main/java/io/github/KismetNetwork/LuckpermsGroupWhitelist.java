@@ -5,6 +5,7 @@ import com.moandjiezana.toml.Toml;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
+import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
@@ -45,12 +46,17 @@ public class LuckpermsGroupWhitelist {
         this.logger = logger;
         this.dataDirectory = dataDirectory;
 
+        readConfig();
+    }
+
+    private void readConfig() throws IOException, IllegalArgumentException {
+        HashMap<String, List<String>> buffer = new HashMap<>();
+
         Path config = dataDirectory.resolve("config.toml");
 
         if (Files.notExists(config)) {
             try (InputStream input = LuckpermsGroupWhitelist.class.getResourceAsStream("/assets/lpgw/default.toml")) {
                 Files.createDirectories(dataDirectory);
-                // Files.createFile(config);
                 Files.copy(Objects.requireNonNull(input, "Jar or class loader is bad."), config);
             }
         } else try (InputStream input = Files.newInputStream(config)) {
@@ -71,13 +77,27 @@ public class LuckpermsGroupWhitelist {
                         }
                     }
 
-                    allowedGroupLookup.put(entry.getKey(), values);
+                    buffer.put(entry.getKey(), values);
                 } else {
                     throw new IllegalArgumentException("Invalid object for key " + entry.getKey() + ": " + entry.getValue());
                 }
             }
         }
+
+        // If we made it here, the config was read successfully.
+        allowedGroupLookup.clear();
+        allowedGroupLookup.putAll(buffer);
     }
+
+    @Subscribe
+    public void onProxyReload(ProxyReloadEvent event) {
+        try {
+            readConfig();
+        } catch (IOException | IllegalArgumentException exception) {
+            logger.warn("Failed to reload the config, falling back to already loaded.", exception);
+        }
+    }
+
     // onServerPreConnect event to check if the player is in the group it needs to be able to connect
     @Subscribe(order = PostOrder.EARLY)
     public void onServerPreConnect(ServerPreConnectEvent event) {
