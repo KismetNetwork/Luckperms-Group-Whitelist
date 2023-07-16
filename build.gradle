@@ -1,22 +1,53 @@
+import java.nio.charset.StandardCharsets
+
+import static java.lang.System.getenv as env
+
 plugins {
-    id 'java'
+	id 'java'
+	id("com.modrinth.minotaur") version "2.6.0"
 }
 
+final def isRelease = env("BUILD_RELEASE")?.toBoolean() ?: false
+final def isActions = env("GITHUB_ACTIONS")?.toBoolean() ?: false
+
+version = isRelease ? projectVersion :
+		isActions ? "$projectVersion-build.${env("GITHUB_RUN_NUMBER")}-commit.${env("GITHUB_SHA").substring(0, 7)}-branch.${env("GITHUB_REF")?.substring(11)?.replace('/', '.') ?: "unknown"}" :
+				"$projectVersion-build.local"
+
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
 }
 
 repositories {
-    mavenCentral()
-    maven {
-        name = "PaperMC"
-        url = uri("https://repo.papermc.io/repository/maven-public/")
-    }
+	mavenCentral()
+	maven {
+		name = "PaperMC"
+		url = uri("https://repo.papermc.io/repository/maven-public/")
+	}
 }
 
 dependencies {
-    compileOnly 'com.velocitypowered:velocity-api:3.0.1'
-    annotationProcessor 'com.velocitypowered:velocity-api:3.0.1'
-    compileOnly 'net.luckperms:api:5.4'
+	compileOnly 'com.velocitypowered:velocity-api:3.0.1'
+	annotationProcessor 'com.velocitypowered:velocity-api:3.0.1'
+	compileOnly 'net.luckperms:api:5.4'
+}
+
+modrinth {
+	token.set(env("MODRINTH_TOKEN"))
+	projectId.set(modrinthId)
+	versionType.set(
+			env("RELEASE_OVERRIDE") ?:
+					projectVersion.contains("alpha") ? "alpha" :
+							!isRelease || projectVersion.contains('-') ? "beta" :
+									"release"
+	)
+	final def ref = env("GITHUB_REF")
+	changelog.set(
+			env("CHANGELOG") ?: (ref != null && ref.startsWith("refs/tags/")) ? "You may view the changelog at https://github.com/KismetNetwork/Luckperms-Group-Whitelist/releases/tag/${URLEncoder.encode(ref.substring(10), StandardCharsets.UTF_8)}"
+					: "No changelog is available. Perhaps poke at https://github.com/KismetNetwork/Luckperms-Group-Whitelist for a changelog?"
+	)
+	uploadFile.set(tasks.jar)
+	gameVersions.add("1.20.1")
+	loaders.addAll("velocity")
 }
